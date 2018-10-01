@@ -48,7 +48,7 @@ public class Machine {
 	}
 	
 	public void print() {
-		System.out.print("{");
+		System.out.print("\t{");
 		for(int i = 0; i <= sp; i++)
 		{
 			System.out.print(s[i] + " " );

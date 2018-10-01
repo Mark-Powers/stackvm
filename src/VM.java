@@ -6,16 +6,17 @@ import java.util.ArrayList;
 public class VM {
 	static int pc;
 	static String line;
+
 	public static void main(String args[]) {
 		if (args.length < 1) {
 			System.out.println("Must pass in file name!");
 			System.exit(1);
 		}
 		boolean debug = false;
-		if(args.length == 2) {
+		if (args.length == 2) {
 			debug = true;
 		}
-		
+
 		File source = new File(args[0]);
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(source));
@@ -36,10 +37,16 @@ public class VM {
 			}
 			br.close();
 
-			for ( pc = 0; pc < lines.size(); pc++) {
+			for (pc = 0; pc < lines.size(); pc++) {
 				line = lines.get(pc);
 				if (line.startsWith("halt")) {
 					break;
+				} else if (line.startsWith("printstr")) {
+					char p;
+					while( (p = (char) stack.pop()) != '\0') {
+						System.out.print(p);
+					}
+					System.out.println();
 				} else if (line.startsWith("print")) {
 					System.out.println(stack.pop());
 				} else if (line.startsWith("rvalue")) {
@@ -80,14 +87,29 @@ public class VM {
 					if (stack.pop() != 0) {
 						pc = stack.getLabel(line.split(" ")[1]);
 					}
+				} else if (line.startsWith("gogt")) {
+					if (stack.pop() < 0) {
+						pc = stack.getLabel(line.split(" ")[1]);
+					}
+				} else if (line.startsWith("gogte")) {
+					if (stack.pop() < 0) {
+						pc = stack.getLabel(line.split(" ")[1]);
+					}
+				} else if (line.startsWith("not")) {
+					if (stack.pop() == 0) {
+						stack.push(1);
+					} else {
+						stack.push(0);
+					}
 				}
+
 				if (debug) {
-					System.out.println(line);
+					System.out.println("\t" + line);
 					stack.print();
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error: PC="+pc);
+			System.out.println("Error: PC=" + pc);
 			System.out.println(line);
 			e.printStackTrace();
 		}
