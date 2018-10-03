@@ -109,9 +109,15 @@ public class VM {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("Error: PC=" + pc);
-			System.out.println(line);
-			e.printStackTrace();
+			System.err.println("Error: PC=" + pc);
+			System.err.println(line);
+			try {
+				throw e;
+			} catch(ArrayIndexOutOfBoundsException e2){
+				System.err.println("Stack empty!");
+			} catch(Exception e2) {
+				e.printStackTrace();
+			}
 		}
 	}
 }
